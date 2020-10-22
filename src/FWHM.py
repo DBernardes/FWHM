@@ -11,7 +11,6 @@ import astropy.io.fits as fits
 import matplotlib.pyplot as plt
 import numpy as np
 from sys import exit
-import Read_Noise_Calc as RNC
 import pandas as pd
 from scipy.interpolate import UnivariateSpline
 
@@ -41,7 +40,7 @@ class fwhm:
 
 
         
-    def read_star_img(self):       
+    def read_star_img(self):   
 
         #read the star image
         self.img_data = fits.getdata(self.img_name).astype(float)
@@ -53,6 +52,7 @@ class fwhm:
         
         #equations of the dark current characterization of the SPARC4 CCDs
         #Access https://github.com/DBernardes/FWHM.git for more details
+        ccd_temp = self.ccd_temp
         if self.ccd_serial == 9914:
             self.dark_noise = 24.66*exp(0.0015*ccd_temp**2+0.29*ccd_temp) 
         if self.ccd_serial == 9915:
@@ -143,28 +143,30 @@ class fwhm:
         
 
     def calc_star_sky_flux(self):
+        #the image needs to be read again as its centroid has been previously adjusted
         self.img_data = fits.getdata(self.img_name).astype(float)
         header = fits.getheader(self.img_name)
         img_shape = self.img_data.shape
         if img_shape[0] == 1: self.img_data = self.img_data[0]
 
         img_shape = self.img_data.shape
-        #cria uma máscara de 1s
+        #creat mask with 1s
         working_mask = np.ones(img_shape,bool)
-        #cria dois arrays de indices
-        ym, xm = np.indices(img_shape, dtype='float32')
-        #cria um array de pixeis dentro de dois círculos concêntricos com raios 2r e 3r
+        #create two indice arrays
+        ym, xm = np.indices(img_shape, dtype='float32')        
+        #create a array with the center in the (x,y) provided values
         r = np.sqrt((xm - self.x)**2 + (ym - self.y)**2)
-        #cria uma máscara configurando como valor 1 os pixeis dentro dos dois cículos        
+        #cria uma máscara configurando como valor 1 os pixeis dentro dos dois cículos
+        #create a mask seeting as 1 those pixels within 2 star radius and 3 star radius
         mask = (r > 2* self.star_radius) * (r < 3 * self.star_radius) * working_mask
-        #calcula a mediana dos pixeis de fundo
+        #calculate the median of the pixels for the sku flux
         self.sky_flux = np.median(self.img_data[np.where(mask)])
 
-        #cria uma máscara para os pixeis dentro do raio da estrela           
+        #create a mask for those pixels within the star radius     
         mask = (r < self.star_radius) * working_mask
-        #fluxo da estrela subtraído do fluxo de fundo
+        #get the star flux and subtracts it from the sky flux
         self.star_flux = (self.img_data[np.where(mask)] - self.sky_flux).sum()
-        #número de pixeis da estrela
+        #number of the star pixels
         self.n_pixels_object = len(self.img_data[np.where(mask)])
         
 
