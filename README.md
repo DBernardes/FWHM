@@ -1,7 +1,7 @@
 # Introduction
 This repo presents the library to calculate the Full Width at Half Maximum (FWHM) of a star image. For that, it is needed to provide to the software the image name, the star (x,y) coordinates, and the maximum sky radius. The sofware seeks for the pixel within the sky radius with the maximum counts value. The star centroid is reset for the (x,y) coordinates of the maximum pixel found. With this information, the star FWHM is calculated through the light profile. The star radius is be three times the length of the FWHM found. 
 
-Also, the software provides the option to calculate the SNR of the star.
+Also, the software provides the option to calculate the  signal-to-noise ratio (SNR) of the star.
 
 This README presents a description of the developed software, and a simple example of its working. Figure below presents an image with the star radius obtained through the software.
 
@@ -16,7 +16,13 @@ This is the software of the calculation of the FWHM of a star image. Initially, 
 
 Beyond the FWHM, the software allow us to calculate the SNR of the star. For this purpose, it is needed to provide the name of a bias image, the ccd gain (in e-/ADU), the exposure time, the dark current noise, and the EM gain (for EMCCDs). A bias image an image acquire with the same CCD operation mode used to acquire the star image, with no light incidence, and for a exposure time equal to zero. The exposure time, dark current noise, and the EM gain are optional parameters. The software seeks the exposure time and the EM gain values in the image header. The dark current noise is estimated based on a model presented by Bernardes et al. ([link](https://arxiv.org/abs/1806.02191)) for the [SPARC4](https://www.spiedigitallibrary.org/proceedings/Download?fullDOI=10.1117/12.924976) EMCCD cameras. This model is based on the CCD temperature. For this reason, the software has the option to provide the CCD temperature used to acquire the star image. 
 
-Then, the software uses the information obtained so far so calculate the sky and star flux in photons. The sky flux is given by the median of those pixels within the region between 2 times and 3 times the star radius found in the previous step. The star flux is given by the sum of those pixels within a circle with the star radius. The obtained value is pixel-by-pixel subtracted by the sky flux. 
+Then, the software uses the information obtained so far so calculate the sky and star flux in photons. The sky flux is given by the median of those pixels within the region between two circles with 2 times and 3 times the star radius found in the previous step. The star flux is given by the sum of those pixels within a circle with the star radius, subtracted by the sky flux. Therefore, the calculation of the SNR is given by
+
+<p align="center">
+  <img src="https://latex.codecogs.com/svg.latex?SNR&space;=&space;\frac{S}{\sqrt{S&space;&plus;&space;n_p&space;\times&space;[S_{sky}&space;&plus;&space;S_{dc}&space;&plus;&space;(\sigma&space;\times&space;G&space;/&space;G_{em})^2]}}" title="SNR = \frac{S}{\sqrt{S + n_p \times [S_{sky} + S_{dc} + (\sigma \times G / G_{em})^2]}}" />
+</p>
+
+where S is the star flux in photons, n<sub>p</sub> is the pixels number of the star, S<sub>sky</sub> is the sky flux in photon, S<sub>dc</sub> is the dark current noise in electrons, &sigma; is the image read noise in analogical-to-digital unit (ADU), G is the CCD gain in e-/ADU, and G<sub>em</sub> is the CCD Electrion Multiplying gain. 
 
  
 
