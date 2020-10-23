@@ -21,11 +21,11 @@ Then, the software uses the information obtained so far so calculate the sky and
 where S is the star flux in photons, n<sub>p</sub> is the pixels number of the star, S<sub>sky</sub> is the sky flux in photon, S<sub>dc</sub> is the dark current noise in electrons, &sigma; is the image read noise in analogical-to-digital unit (ADU), G is the CCD gain in e-/ADU, and G<sub>em</sub> is the CCD Electrion Multiplying gain. 
 
  
-## Running the software
+# Running the software
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
 
-### Prerequisites
+## Prerequisites
 There are some packages that need to be installed before running the software.They are:
 
 * [math](https://docs.python.org/3/library/math.html)
@@ -38,7 +38,7 @@ To install these packages it is suggested to use the pip command as follows
 pip install <package_name>
 ```
 
-### Installing
+## Installing
 Clone this repo using ```https://github.com/DBernardes/FWHM.git```
 
 ## Running the tests
