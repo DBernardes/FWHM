@@ -16,8 +16,7 @@ FWHM_obj = FWHM.fwhm(img_name = file_dir + '\\' +  file_name,
                      xy_star = (507,369),
                      sky_radius = 20,
                      bias_name = file_dir + '\\' +  bias_name,
-                     ccd_gain = 3.36,
-                     em_gain = 0)
+                     ccd_gain = 3.36)
 
 FWHM_obj.read_star_img()
 FWHM_obj.get_max_count()
@@ -32,10 +31,10 @@ FWHM_obj.calc_star_sky_flux()
 snr, rn, sky_flux, star_flux, n_pixels = FWHM_obj.calc_SNR()
 
 print('\n')
-print('FWHM: ', fwhm)
-print('Star Radius:', star_radius)
+print('FWHM: ', round(fwhm,2), 'pixels')
+print('Star Radius:', round(star_radius), 'pixels')
 print('Centroide: %i,%i'%(x,y))
-print('SNR: ', snr)
-print('Sky Flux: ', sky_flux, 'photons/s')
-print('Star Flux:', star_flux, 'photons/s')
+print('SNR: ', round(snr,2))
+print('Sky Flux: ', round(sky_flux,2), 'photons/s')
+print('Star Flux:', round(star_flux,2), 'photons/s')
 print('Star Pixels:', n_pixels)
