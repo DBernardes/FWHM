@@ -1,9 +1,22 @@
 # Introduction
-This repo presents the library to calculate the FWHM of a star image. For that, it is needed to provide to the software the image name, the star (x,y) coordinates, and the maximum sky radius. The sofware will seek for the pixel within the sky radius with the maximum counts value. The star centroid will be reset for the (x,y) coordinates of the maximum pixel found. With this information, the star FWHM will be calculated through the light profile. The star radius will be three times the length of the FWHM found. This README presents a description of the developed software, and a simple example of its working. Figure below presents an image with the star radius obtained through the software.
+This repo presents the library to calculate the Full Width at Half Maximum (FWHM) of a star image. For that, it is needed to provide to the software the image name, the star (x,y) coordinates, and the maximum sky radius. The sofware will seek for the pixel within the sky radius with the maximum counts value. The star centroid will be reset for the (x,y) coordinates of the maximum pixel found. With this information, the star FWHM will be calculated through the light profile. The star radius will be three times the length of the FWHM found. 
+
+Also, the software provides the option to calculate the SNR of the star.
+
+This README presents a description of the developed software, and a simple example of its working. Figure below presents an image with the star radius obtained through the software.
 
 <p align="center">
   <img src="https://github.com/DBernardes/FWHM/blob/main/star_image.png" />
 </p>
+
+
+# Description
+
+This is the software of the calculation of the FWHM of a star image. Initially, it is needed to provide to the software the image name, the (x,y) coordinates of the star, and the maximum sky radius. Then, the software will seek for the pixel with the maximum counts value within a circle centered in the provided coordiantes and with radius equal to the maximum star radius. The software provides the option to reset the centroid of the star for the maximum pixel. Based on this information, the software will calculate the FHWM of the star. To accomplish that, it is done an interpolation for the light profile subtracted by half of the maximum pixel value along the x direction of the star centroid. The FWHM will be given by the distance between the point where the interpolation touch the x axis. Also, the star radius will be three times the FWHM found.
+
+Beyond the FWHM, the software allow us to calculate the SNR of the star. For this purpose, it is needed to provide the name of a bias image, the ccd gain (in e-/ADU), the exposure time, the dark current noise, and the EM gain (for EMCCDs). A bias image an image acquire with the same CCD operation mode used to acquire the star image, with no light incidence, and for a exposure time equal to zero. The exposure time, dark current noise, and the EM gain are optional parameters. The software will seek the exposure time and the EM gain values in the image header. The dark current noise will be estimated based on a model presented by Bernardes et al. ([link](https://arxiv.org/abs/1806.02191)) for the [SPARC4](https://www.spiedigitallibrary.org/proceedings/Download?fullDOI=10.1117/12.924976) EMCCD cameras.
+
+ 
 
 
 ## Getting Started
