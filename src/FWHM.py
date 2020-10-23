@@ -1,23 +1,41 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-#ahuthor:Denis Varise Bernardes.
+#author:Denis Varise Bernardes.
 #26/11/2019.
 
 '''
-This library contains the class of the calculation of the star FWHM. Initially, it is needed to provide to the class the name
-of the FITS image, the (x,y) corrdinates of the star, and the maximum sky radius. The star image will be read and the function
-get_max_count() will seek for the pixel within the sky radius with the maximum counts value. The function set_centroid() is
-optional and it resets the star centroid based on the maximum pixel value found in previous step. Then, the function
-calc_FWHM() will calculate the star FWHM. The star radius length will be three times the FWHM length.
+This is the software for the calculation of the FWHM of a star image. Initially, it is needed to provide to the software the image name,
+the (x,y) coordinates of the star, and the maximum sky radius. Then, the software seeks for the pixel with the maximum count value within
+a circle centered in the provided coordinates and with a radius equal to the maximum star radius. The software provides the option to reset
+the centroid of the star for the maximum pixel. Based on this information, the software calculates the FHWM of the star. To accomplish that,
+it is done an interpolation for the light profile subtracted by half of the maximum pixel value along the x-direction of the star centroid.
+The FWHM is given by the distance between the point where the interpolation touches the x-axis. Also, the star radius equals three times the
+FWHM found.
+
+Beyond the FWHM, the software allows us to calculate the SNR of the star. For this purpose, it is needed to provide the name of a bias image,
+the CCD gain (in e-/ADU), the exposure time, the dark current noise, and the EM gain (for EMCCDs). A bias image is an image acquired with the
+same CCD operation mode used to acquire the star image, with no light incidence, and for an exposure time equal to zero. The exposure time,
+dark current noise, and the EM gain are optional parameters. The software seeks the exposure time and the EM gain values in the image header.
+The dark current noise is estimated based on a model presented by Bernardes et al. (link) for the SPARC4 EMCCD cameras. This model is based on
+the CCD temperature. For this reason, the software has the option to provide the CCD temperature used to acquire the star image.
+
+Then, the software uses the information obtained so far so calculate the sky and star flux in photons. The sky flux is given by the median
+of those pixels within the region between two circles with 2 times and 3 times the star radius found in the previous step. The star flux is
+given by the sum of those pixels within a circle with the star radius, subtracted by the sky flux. Therefore, the calculation of the SNR is given by
+
+[SNR = \frac{S}{\sqrt{S + n_p \times [S_{sky} + S_{dc} + (\sigma \times G / G_{em})^2]}}]
+
+where S is the star flux in photons, np is the pixels number of the star, Ssky is the sky flux in photon, Sdc is the dark current noise in electrons,
+σ is the image read noise in analogical-to-digital unit (ADU), G is the CCD gain in e-/ADU, and Gem is the CCD Electrion Multiplying gain.
 '''
+
+
 
 from math import exp, sqrt
 import astropy.io.fits as fits
-import matplotlib.pyplot as plt
 import numpy as np
 from sys import exit
-import pandas as pd
 from scipy.interpolate import UnivariateSpline
 
 class fwhm:
@@ -204,13 +222,10 @@ class fwhm:
         n_pix = self.n_pixels_star        
         exp_time = self.exp_time
         dc = self.dark_noise*exp_time
-        rn = self.read_noise        
-
-        #if the CCD is a EMCCD, apply the em_gain
         em_gain = self.em_gain 
-        star*= em_gain
-        sky *= em_gain
-        dc  *= em_gain
+        rn = self.read_noise/em_gain              
+        
+     
 
         #SNR equation
         aux = np.sqrt(star + n_pix * (sky + dc + rn**2))
