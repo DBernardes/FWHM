@@ -223,7 +223,8 @@ class fwhm:
         exp_time = self.exp_time
         dc = self.dark_noise*exp_time
         em_gain = self.em_gain 
-        rn = self.read_noise/em_gain              
+        rn = self.read_noise/em_gain
+        bias_level = np.mean(self.bias_data)
         
      
 
@@ -231,7 +232,7 @@ class fwhm:
         aux = np.sqrt(star + n_pix * (sky + dc + rn**2))
         self.SNR = star/aux
 
-        return self.SNR, rn, sky/exp_time, star/exp_time, n_pix
+        return self.SNR, rn, sky/exp_time, star/exp_time, n_pix, bias_level
     
 
    
