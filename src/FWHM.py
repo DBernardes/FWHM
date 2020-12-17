@@ -73,6 +73,9 @@ class fwhm:
         #read the star image
         self.img_data = fits.getdata(self.img_name).astype(float)
         self.header = fits.getheader(self.img_name)
+        if self.ccd_gain == 0:
+            try:self.ccd_gain = float(self.header['GAIN'])
+            except:1
         img_shape = self.img_data.shape
         if img_shape[0] == 1: self.img_data = self.img_data[0]            
            
