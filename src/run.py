@@ -7,8 +7,10 @@
 #22/10/2020.
 
 import FWHM
+import os
+from sys import exit
 
-file_dir = r'C:\Users\observer\Desktop\FWHM\Sample images'
+file_dir = os.path.dirname(os.getcwd()) + '\Sample images\\'
 file_name = 'star.fits'
 bias_name = 'bias.fits'
 
@@ -28,7 +30,7 @@ FWHM_obj.calc_dark_current()
 FWHM_obj.read_exp_time()
 FWHM_obj.read_em_gain()
 FWHM_obj.calc_star_sky_flux()
-snr, rn, sky_flux, star_flux, n_pixels = FWHM_obj.calc_SNR()
+snr, rn, sky_flux, star_flux, n_pixels, bias_level = FWHM_obj.calc_SNR()
 
 print('\n')
 print('FWHM: ', round(fwhm,2), 'pixels')
