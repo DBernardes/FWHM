@@ -42,8 +42,7 @@ pip install <package_name>
 Clone this repo using ```https://github.com/DBernardes/FWHM.git```
 
 ## Running the tests
-1. Open the file run.py. In this file, it is needed to provide to the ```file_dir``` variable the path of the sample images in your current machine. 
-2. Execute the run.py file. The calculation results will be printed on the screen.   
+To run a simple test, you only need to execute the run.py file. The calculation results will be printed on the screen.   
 
 
 ## Authors and Contact
